@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "audio.h": "c",
+        "limits": "c",
+        "soundcard.h": "c"
+    }
+}
