@@ -34,29 +34,31 @@ int main(){
        return -1;
     }
 
-    /* // Affichage des caractéristiques de la musique à lire (Optionnel)
-    * printf("Initialisation réussie : \nFilename: %s\nSample_rate: %d\nSample_size: %d\nChannels: %d\n",
-    *         filename, sample_rate, sample_size, channels);
-    */
-
     // Initialisation du descripteur du lecteur audio
     int audio_descriptor = aud_writeinit(sample_rate, sample_size, channels);
-
-    char buffer[sample_size]; // Tableau dans lequel les octes lus seront écrits
-    ssize_t bytes_lu = sample_size, bytes_ecrits=sample_size; // Variables contenant le nombre de bytes écrits/lus
+    
+    if (audio_descriptor == -1){
+       printf("Erreur du audio_descriptor\n");
+       return -1;
+    }
+    
+    char bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
+    ssize_t nbr_bytes_lu = sample_size, nbr_bytes_ecrits=sample_size; // Variables contenant le nombre de bytes écrits/lus
 
     /* Pour lire la musique, il faut d'abord lire les octets dans le fichier .wav
     *  puis les écrires dans le lecteur audio.
-    *  Le tableau buffer est vidé à chaque tour de boucle par sécurité.
+    *  Le tableau bytes_lus est vidé à chaque tour de boucle par sécurité.
     *  Lorsque le fichier arrive à son terme, le nombre de bytes lus ne correspondra plus 
     *  à la taille des échantillons et on sort de la boucle
     */
-    while(bytes_lu == sample_size && bytes_ecrits == sample_size){
+    while(nbr_bytes_lu == sample_size && nbr_bytes_ecrits == sample_size){
         // Lecture des octets dans le fichier.wav
-        bytes_lu = read(file_descriptor, buffer , sample_size); 
+        nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
         // Ecriture de ces octets dans le lecteur audio
-        bytes_ecrits = write(audio_descriptor, buffer, sample_size);
-        // Nettoyage du tableau buffer
-        bzero(buffer, sample_size);
+        nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
+        // Nettoyage du tableau bytes_lus
+        bzero(bytes_lus, sample_size);
     }
+
+    printf("Lecture terminée");
 }
