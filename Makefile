@@ -16,6 +16,12 @@ obj/lecteur.o: src/lecteur.c include/audio.h #On n'utilise pas list.h dans la co
 obj/audio.o: src/audio.c include/audio.h #On n'utilise pas list.h dans la commande car il est inclus dans le .c. En revanche, il faut indiquer à make qu'il recompile quand celui-ci est modifié.
 	$(CC) -o $@ $(CFLAGS) $<
 
+obj/audioserveur.o: src/audioserveur.c include/audio.h #On n'utilise pas list.h dans la commande car il est inclus dans le .c. En revanche, il faut indiquer à make qu'il recompile quand celui-ci est modifié.
+	$(CC) -o $@ $(CFLAGS) $<
+
+obj/audioclient.o: src/audioclient.c include/audio.h #On n'utilise pas list.h dans la commande car il est inclus dans le .c. En revanche, il faut indiquer à make qu'il recompile quand celui-ci est modifié.
+	$(CC) -o $@ $(CFLAGS) $<
+
 # Remove files
 
 clean :
