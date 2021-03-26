@@ -15,7 +15,7 @@ int main(){
     // Variables
     int socket_descriptor, err_bind, err_send; // Descripteur du socket et indicateur du succès (ou non) de bind
     struct sockaddr_in adresse, from; // Structures contenant l'adresse du socket et l'adresse de la source des messages
-    char msg_received[64]; // Buffer pour le message
+    char msg_received[64], msg_send[64]; // Buffer pour le message
     socklen_t rlen, flen; // Variables pour le nombre d'octets reçus et pour la longueur de l'adresse source des messages
 
 
@@ -58,6 +58,33 @@ int main(){
             return -1;
         }
 
+        // Envoie de sample_rate
+        bzero(msg_send, 64);
+        strcpy(msg_send, sample_rate);
+        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
+                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
+        if(err_send < 0){
+            return -1;
+        }   
+
+        // Envoie de sample_size
+        bzero(msg_send, 64);
+        strcpy(msg_send, sample_size);
+        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
+                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
+        if(err_send < 0){
+            return -1;
+        } 
+
+        // Envoie de channels  
+        bzero(msg_send, 64);
+        strcpy(msg_send, channels);
+        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
+                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
+        if(err_send < 0){
+            return -1;
+        }   
+
         // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
         char bytes_lus[sample_size];
         ssize_t nbr_bytes_lu = sample_size;
@@ -74,6 +101,14 @@ int main(){
                 // Nettoyage du tableau bytes_lus
                 bzero(bytes_lus, sample_size);
             }
+    }
+    // Message indiquant la fin de la transmission
+    bzero(msg_send, 64);
+    strcpy(msg_send, "fin");
+    err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
+                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
+    if(err_send < 0){
+        return -1;
     }
     close(socket_descriptor);
 }
