@@ -1,0 +1,28 @@
+﻿Guilhem CALONNE et Nathan Le Moan
+Compte-Rendu : Steaming Audio
+  
+ 
+Description du protocole :
+Le protocole de streaming audio fonctionne avec un client et un serveur. Il ne peut gérer qu’un utilisateur à la fois. Le client envoie en premier un datagramme au serveur contenant le nom de la musique à jouer. Une fois reçu, le serveur ouvre le fichier en local et commence par envoyer les métadonnées liées au fichier (sample_rate, sample_size et channels). 
+Après cela, le serveur commence à lire le fichier audio et à envoyer les bytes lu dans le fichier sans interruptions jusqu’à ce que le fichier ait été entièrement lu. Le serveur termine sa tâche en envoyant un signal au client indiquant que le fichier a été intégralement lu. 
+Le client quant à lui, reçoit d’abord les métadonnées. Il s’en sert ensuite pour configurer son lecteur grâce à la méthode audio_writeinit du fichier audio.c. Une fois cela fait, il attend de recevoir les bytes lus par le serveur afin de les jouer jusqu’à ce que le signal de fin ait été reçu. 
+
+Documentation
+        Audioserveur :
+        
+int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from) :
+Effet : 
+Ouvre le fichier dont le nom est fourni en paramètre et envoi les métadonnées au client. Retourne le descripteur du fichier ouvert.
+
+Paramètres : 
+        - int sample_rate : pointeur qui sera modifié lors de l’exécution de la fonction
+        - int sample_size : pointeur qui sera modifié lors de l’exécution de la fonction
+        - int channels : pointeur qui sera modifié lors de l’exécution de la fonction
+        - char* filename : chaîne de caractère contenant le nom du fichier à lire
+        - int socket_descriptor : descripteur du socket sur lequel envoyer les informations
+        - struct sockaddr_in from : adresse du destinataire des messages
+
+Valeurs de retour : 
+        -1 en cas d’erreur lors de l’ouvertur du fichier
+        -2 en cas d’erreur d’envoi des informations
+        le descripteur du fichier audio sinon

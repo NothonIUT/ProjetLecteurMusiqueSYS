@@ -51,6 +51,12 @@ int main(){
         int channels = 0;
 
         int file_descriptor = envoi_infos_musique(sample_rate, sample_size, channels, filename, socket_descriptor, from);
+        
+        if (file_descriptor == -1){
+            printf("Erreur du file_descriptor\n");
+            return -1;
+        }
+        
         // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
         char bytes_lus[sample_size];
         ssize_t nbr_bytes_lu = sample_size;
@@ -87,10 +93,6 @@ int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* fi
     // Lecture des caractéristiques du fichier et récupération du descripteur du fichier
     int file_descriptor = aud_readinit(filename, &sample_rate, &sample_size, &channels);
 
-    if (file_descriptor == -1){
-        printf("Erreur du file_descriptor\n");
-        return -1;
-    }   
     char msg_send[64];
     // Envoie de sample_rate
         bzero(msg_send, 64);
