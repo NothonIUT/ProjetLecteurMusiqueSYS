@@ -50,7 +50,7 @@ int main(){
         int sample_size = 0;
         int channels = 0;
 
-        int file_descriptor = envoi_infos_musique(sample_rate, sample_size, channels, filename, socket_descriptor, &from);
+        int file_descriptor = envoi_infos_musique(sample_rate, sample_size, channels, filename, socket_descriptor, from);
         // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
         char bytes_lus[sample_size];
         ssize_t nbr_bytes_lu = sample_size;
