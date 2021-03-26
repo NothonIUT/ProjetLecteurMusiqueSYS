@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-Wall -g -I./include -c #include pour GCC, car option de compilation
-DEP=include/audio.h
+DEP=include/audio.h include/serveurclient.h
 OBJ=obj/lecteur.o obj/audio.o
 EXEC=bin/lecteur
 
@@ -10,16 +10,16 @@ EXEC=bin/lecteur
 $(EXEC): $(OBJ)
 	$(CC) -o $@ $^
 	
-obj/lecteur.o: src/lecteur.c include/audio.h #On n'utilise pas list.h dans la commande car il est inclus dans le .c. En revanche, il faut indiquer à make qu'il recompile quand celui-ci est modifié.
+obj/lecteur.o: src/lecteur.c include/audio.h include/serveurclient.h
 	$(CC) -o $@ $(CFLAGS) $<
 
-obj/audio.o: src/audio.c include/audio.h #On n'utilise pas list.h dans la commande car il est inclus dans le .c. En revanche, il faut indiquer à make qu'il recompile quand celui-ci est modifié.
+obj/audio.o: src/audio.c include/audio.h include/serveurclient.h
 	$(CC) -o $@ $(CFLAGS) $<
 
-obj/audioserveur.o: src/audioserveur.c include/audio.h #On n'utilise pas list.h dans la commande car il est inclus dans le .c. En revanche, il faut indiquer à make qu'il recompile quand celui-ci est modifié.
+obj/audioserveur.o: src/audioserveur.c include/audio.h include/serveurclient.h
 	$(CC) -o $@ $(CFLAGS) $<
 
-obj/audioclient.o: src/audioclient.c include/audio.h #On n'utilise pas list.h dans la commande car il est inclus dans le .c. En revanche, il faut indiquer à make qu'il recompile quand celui-ci est modifié.
+obj/audioclient.o: src/audioclient.c include/audio.h include/serveurclient.h
 	$(CC) -o $@ $(CFLAGS) $<
 
 # Remove files

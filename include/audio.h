@@ -3,7 +3,8 @@
  * part of the Systems Programming 2005 assignment
  * (c) Vrije Universiteit Amsterdam, BSD License applies
  * contact info : wdb -_at-_ few.vu.nl
- * */
+ * 
+ */
 
 /** open a WAV-file for reading
  *
