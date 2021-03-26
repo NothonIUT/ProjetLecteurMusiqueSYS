@@ -50,41 +50,7 @@ int main(){
         int sample_size = 0;
         int channels = 0;
 
-        // Lecture des caractéristiques du fichier et récupération du descripteur du fichier
-        int file_descriptor = aud_readinit(filename, &sample_rate, &sample_size, &channels);
-
-        if (file_descriptor == -1){
-            printf("Erreur du file_descriptor\n");
-            return -1;
-        }
-
-        // Envoie de sample_rate
-        bzero(msg_send, 64);
-        strcpy(msg_send, sample_rate);
-        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
-                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
-        if(err_send < 0){
-            return -1;
-        }   
-
-        // Envoie de sample_size
-        bzero(msg_send, 64);
-        strcpy(msg_send, sample_size);
-        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
-                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
-        if(err_send < 0){
-            return -1;
-        } 
-
-        // Envoie de channels  
-        bzero(msg_send, 64);
-        strcpy(msg_send, channels);
-        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
-                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
-        if(err_send < 0){
-            return -1;
-        }   
-
+        int file_descriptor = envoi_infos_musique(sample_rate, sample_size, channels, filename, socket_descriptor, &from);
         // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
         char bytes_lus[sample_size];
         ssize_t nbr_bytes_lu = sample_size;
@@ -111,4 +77,47 @@ int main(){
         return -1;
     }
     close(socket_descriptor);
+}
+
+/* Fonction servant à envoyer les informations sur la musique au client.
+ * La fonction renvoie le descripteur du fichier si toutes les informations ont été récoltées et envoyées
+ * et renvoie -1 sinon;
+*/
+int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from){
+    // Lecture des caractéristiques du fichier et récupération du descripteur du fichier
+    int file_descriptor = aud_readinit(filename, &sample_rate, &sample_size, &channels);
+
+    if (file_descriptor == -1){
+        printf("Erreur du file_descriptor\n");
+        return -1;
+    }   
+    char msg_send[64];
+    // Envoie de sample_rate
+        bzero(msg_send, 64);
+        strcpy(msg_send, sample_rate);
+        int err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
+                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
+        if(err_send < 0){
+            return -1;
+        }   
+
+        // Envoie de sample_size
+        bzero(msg_send, 64);
+        strcpy(msg_send, sample_size);
+        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
+                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
+        if(err_send < 0){
+            return -1;
+        } 
+
+        // Envoie de channels  
+        bzero(msg_send, 64);
+        strcpy(msg_send, channels);
+        err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
+                            0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
+        if(err_send < 0){
+            return -1;
+        }  
+
+    return file_descriptor; 
 }
