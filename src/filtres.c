@@ -28,3 +28,9 @@ int stereo_to_mono(int channels){
 
     return 1;
 }
+
+int add_echo(char* bytes_lus, int audio_descriptor, int sample_rate, int sample_size, int channels){
+    char buffer1[sample_size];
+    char buffer2[sample_size];
+    char buffer3[sample_size];
+}
