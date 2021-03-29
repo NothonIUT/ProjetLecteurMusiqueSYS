@@ -4,13 +4,4 @@
 #include <unistd.h>
 #include <string.h>
 #include "../include/audio.h"
-
-int main(){
-
-    /* idées de filtres
-    *
-    */
-
-
-   return 1;
-}
+#include "../include/filtres.h"
