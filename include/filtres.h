@@ -8,3 +8,6 @@
 *  La fonction renvoie le produit de sample_rate et factor sinon.
 */
 int modify_song_speed(int factor, int sample_rate);
+
+int stereo_to_mono(int channels);
+

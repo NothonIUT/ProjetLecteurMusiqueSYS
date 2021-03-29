@@ -20,3 +20,11 @@ int modify_song_speed(int factor, int sample_rate){
 
     return sample_rate*factor;
 }
+
+int stereo_to_mono(int channels){
+    if (channels <= 0 || channels > 2){
+        return -1;
+    }
+
+    return 1;
+}
