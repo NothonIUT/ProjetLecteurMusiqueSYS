@@ -9,7 +9,7 @@
 #include <netinet/in.h>
 #include <audio.h>
 #include <netdb.h>
-#include "serveurclient.h"
+#include "../include/serveurclient.h"
 
 
 int main(int argc, char** args) {

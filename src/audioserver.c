@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "../include/audio.h"
-#include "serveurclient.h"
+#include "../include/serveurclient.h"
 
 #define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/"
 
