@@ -1,3 +1,8 @@
+/* To make audio playback work on modern Linux systems:
+   - Start your audio client with "padsp audioclient" instead of just "audioclient"
+   - Or set $LD_PRELOAD to libpulsedsp.so
+*/
+
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/soundcard.h>
