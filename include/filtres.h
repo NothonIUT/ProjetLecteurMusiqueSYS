@@ -12,3 +12,5 @@ int modify_song_speed(int factor, int sample_rate);
 int stereo_to_mono(int channels);
 
 int add_echo(char* bytes_lus, int audio_descriptor, int sample_rate, int sample_size, int channels);
+
+int turn_up_volume(int factor,int sample_size, char* bytes_lu);

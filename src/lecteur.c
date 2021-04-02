@@ -1,5 +1,11 @@
+/* To make audio playback work on modern Linux systems:
+   - Start your audio client with "padsp audioclient" instead of just "audioclient"
+   - Or set $LD_PRELOAD to libpulsedsp.so
+*/
+
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/soundcard.h>
 #include <unistd.h>
 #include <string.h>
@@ -7,6 +13,18 @@
 
 #define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/" // A changer selon l'emplacement du projet sur votre machine
 #define MAX_FILENAME_LENGTH 512 // Longueur maximale du chemin jusqu'au fichier
+
+int turn_up_volume(int factor,int sample_size, char* bytes_lu){
+    char* err;
+    long bytes_to_long = strtol(bytes_lu, &err, 2) * factor;
+    bytes_lu[0] = '\0';
+    unsigned long val;
+    for (val = 1UL << (sample_size -1); val > 0; val >>= 1) 
+    {   
+        strcat(bytes_lu, ((bytes_to_long & val) == val) ? "1" : "0");
+    }
+    return 0;
+}
 
 int main(){
     
@@ -41,7 +59,6 @@ int main(){
        printf("Erreur du audio_descriptor\n");
        return -1;
     }
-    
     char bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
     ssize_t nbr_bytes_lu = sample_size, nbr_bytes_ecrits=sample_size; // Variables contenant le nombre de bytes écrits/lus
 
@@ -54,11 +71,15 @@ int main(){
     while(nbr_bytes_lu == sample_size && nbr_bytes_ecrits == sample_size){
         // Lecture des octets dans le fichier.wav
         nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
+        
+        turn_up_volume(1, sample_size, bytes_lus);
         // Ecriture de ces octets dans le lecteur audio
         nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
+
         // Nettoyage du tableau bytes_lus
         bzero(bytes_lus, sample_size);
     }
 
     printf("Lecture terminée");
 }
+
