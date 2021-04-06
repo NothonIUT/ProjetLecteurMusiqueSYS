@@ -41,14 +41,9 @@ int add_echo(char* bytes_lus, int audio_descriptor, int sample_rate, int sample_
     
 }
 
-int turn_up_volume(int factor,int sample_size, char* bytes_lu){
-    char* err;
-    long bytes_to_long = strtol(bytes_lu, &err, 2) * factor;
-    bytes_lu[0] = '\0';
-    unsigned long val;
-    for (val = 1UL << (sample_size -1); val > 0; val >>= 1) 
-    {   
-        strcat(bytes_lu, ((bytes_to_long & val) == val) ? "1" : "0");
-    }
+int turn_up_volume(float factor, int sample_size, unsigned short *bytes_lu){
+    float sample_float = (float) *bytes_lu;
+    sample_float *= factor;
+    *bytes_lu = (unsigned short) sample_float;
     return 0;
 }

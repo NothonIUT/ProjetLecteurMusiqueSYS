@@ -14,18 +14,6 @@
 #define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/" // A changer selon l'emplacement du projet sur votre machine
 #define MAX_FILENAME_LENGTH 512 // Longueur maximale du chemin jusqu'au fichier
 
-int turn_up_volume(int factor,int sample_size, char* bytes_lu){
-    char* err;
-    long bytes_to_long = strtol(bytes_lu, &err, 2) * factor;
-    bytes_lu[0] = '\0';
-    unsigned long val;
-    for (val = 1UL << (sample_size -1); val > 0; val >>= 1) 
-    {   
-        strcat(bytes_lu, ((bytes_to_long & val) == val) ? "1" : "0");
-    }
-    return 0;
-}
-
 int main(){
     
     /* On demande le nom du fichier à l'utilisateur. Pour plus de simplicité, on impose le dossier 
@@ -59,7 +47,7 @@ int main(){
        printf("Erreur du audio_descriptor\n");
        return -1;
     }
-    char bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
+    unsigned short bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
     ssize_t nbr_bytes_lu = sample_size, nbr_bytes_ecrits=sample_size; // Variables contenant le nombre de bytes écrits/lus
 
     /* Pour lire la musique, il faut d'abord lire les octets dans le fichier .wav
@@ -72,7 +60,6 @@ int main(){
         // Lecture des octets dans le fichier.wav
         nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
         
-        turn_up_volume(1, sample_size, bytes_lus);
         // Ecriture de ces octets dans le lecteur audio
         nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
 
