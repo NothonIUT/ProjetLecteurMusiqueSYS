@@ -14,6 +14,24 @@
 #define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/" // A changer selon l'emplacement du projet sur votre machine
 #define MAX_FILENAME_LENGTH 512 // Longueur maximale du chemin jusqu'au fichier
 
+int stereo_to_mono(int convert, int channels, unsigned short *bytes_lus, int file_descriptor, int sample_size){
+    if (channels != 1)
+        channels = 1;
+
+    if (convert > 1 || convert < 0)
+        return -1;
+
+    // Si l'extrait ne doit pas être joue, on lit le suivant et on passe must_be_played à 1
+    if (convert == 0){
+        bzero(bytes_lus, sample_size);
+        read(file_descriptor, bytes_lus , sample_size);
+        return 1;
+    }
+
+    // Si l'extrait doit etre joue, on se contente de passer must_be_played à 0
+    return 0;
+}
+
 int main(){
     
     /* On demande le nom du fichier à l'utilisateur. Pour plus de simplicité, on impose le dossier 
@@ -47,6 +65,8 @@ int main(){
        printf("Erreur du audio_descriptor\n");
        return -1;
     }
+
+    int convert = 1;
     unsigned short bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
     ssize_t nbr_bytes_lu = sample_size, nbr_bytes_ecrits=sample_size; // Variables contenant le nombre de bytes écrits/lus
 
@@ -61,7 +81,7 @@ int main(){
         nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
         
         // Ecriture de ces octets dans le lecteur audio
-        stereo_to_mono(channels, bytes_lus, file_descriptor, sample_size);
+        convert = stereo_to_mono(convert, channels, bytes_lus, file_descriptor, sample_size);
         nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
 
         // Nettoyage du tableau bytes_lus

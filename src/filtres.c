@@ -43,6 +43,11 @@ int stereo_to_mono(int channels, unsigned short *bytes_lus, int file_descriptor,
     return 1;
 }
 
+int mono_to_stereo(int channels, unsigned short *bytes_lus, int file_descriptor, int sample_size){
+    
+}
+
+
 int add_echo(char* bytes_lus, int audio_descriptor, int sample_rate, int sample_size, int channels){
     // TODO
 }
