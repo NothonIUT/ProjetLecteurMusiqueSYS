@@ -14,24 +14,6 @@
 #define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/" // A changer selon l'emplacement du projet sur votre machine
 #define MAX_FILENAME_LENGTH 512 // Longueur maximale du chemin jusqu'au fichier
 
-int stereo_to_mono(int convert, int channels, unsigned short *bytes_lus, int file_descriptor, int sample_size){
-    if (channels != 1)
-        channels = 1;
-
-    if (convert > 1 || convert < 0)
-        return -1;
-
-    // Si l'extrait ne doit pas être joue, on lit le suivant et on passe must_be_played à 1
-    if (convert == 0){
-        bzero(bytes_lus, sample_size);
-        read(file_descriptor, bytes_lus , sample_size);
-        return 1;
-    }
-
-    // Si l'extrait doit etre joue, on se contente de passer must_be_played à 0
-    return 0;
-}
-
 int main(){
     
     /* On demande le nom du fichier à l'utilisateur. Pour plus de simplicité, on impose le dossier 
