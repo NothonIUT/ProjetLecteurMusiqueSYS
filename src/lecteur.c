@@ -61,6 +61,7 @@ int main(){
         nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
         
         // Ecriture de ces octets dans le lecteur audio
+        stereo_to_mono(channels, bytes_lus, file_descriptor, sample_size);
         nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
 
         // Nettoyage du tableau bytes_lus

@@ -22,23 +22,29 @@ int modify_song_speed(int factor, int sample_rate){
     return sample_rate*factor;
 }
 
-int stereo_to_mono(int channels){
-    if (channels != 2){
+int stereo_to_mono(int channels, unsigned short *bytes_lus, int file_descriptor, int sample_size){
+    int must_be_played = 1;
+    if (channels != 1)
+        channels = 1;
+
+    if (must_be_played > 1 || must_be_played < 0)
         return -1;
+
+    // Si l'extrait ne doit pas être joue, on lit le suivant et on passe must_be_played à 1
+    if (must_be_played == 0){
+        read(file_descriptor, bytes_lus , sample_size);
+        must_be_played = 1;
     }
+
+    // Si l'extrait doit etre joue, on se contente de passer must_be_played à 0
+    if(must_be_played == 1)
+        must_be_played = 0;
 
     return 1;
 }
 
 int add_echo(char* bytes_lus, int audio_descriptor, int sample_rate, int sample_size, int channels){
-    char buffer1[sample_size];
-    for (int i = 0; i < sample_size; i++)
-    {
-        buffer1[i] = bytes_lus[i];
-    }
-
-    write(aud_readinit, buffer1, sample_size);
-    
+    // TODO
 }
 
 int turn_up_volume(float factor, int sample_size, unsigned short *bytes_lu){
