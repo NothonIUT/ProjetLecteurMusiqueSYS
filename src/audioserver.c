@@ -8,8 +8,9 @@
 #include <arpa/inet.h>
 #include "../include/audio.h"
 #include "../include/serveurclient.h"
+#include "../include/filtres.h"
 
-#define DEFAULT_PATH "/private/student/e/ne/gcalonne/Bureau/TP_SYS/ProjetLecteurMusiqueSYS-master/data/"
+#define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/"
 
 int main() {
 
@@ -46,20 +47,28 @@ int main() {
     flen = sizeof(struct sockaddr_in);
     rlen = recvfrom(socket_descriptor, msg_received, sizeof(msg_received), 0, 
                     (struct sockaddr*) &from, &flen);
+    char* nomChanson = strtok(msg_received, "|");
+    char* filtre = strtok(NULL, "|");
     if(rlen < 0) {
         printf("Erreur de la réception du nom du fichier à jouer !\n");
         return -1;
     }else {
         char filename[512]; // Déclaration de la variable qui contiendra le chemin complet jusqu'au fichier
         strcpy(filename, DEFAULT_PATH);
-        strcat(filename, msg_received);
+        strcat(filename, nomChanson);
         int sample_rate = 0;
         int sample_size = 0;
         int channels = 0;
+        int factor = 1;
 
+        if(strcmp(filtre, "modify_song_speed") != 1){
+            rlen = recvfrom(socket_descriptor, msg_received, sizeof(msg_received), 0, 
+                    (struct sockaddr*) &from, &flen);
+            int factor = (int) msg_received;
+        }
         printf("Envoi des informations de la musique...\n");
 
-        int file_descriptor = envoi_infos_musique(sample_rate, sample_size, channels, filename, socket_descriptor, from);
+        int file_descriptor = envoi_infos_musique(sample_rate, sample_size, channels, filename, socket_descriptor, from, factor);
         
         if (file_descriptor == -1) {
             printf("Erreur lors de l'envoi des informations de la musique !\n");
@@ -71,10 +80,19 @@ int main() {
         ssize_t nbr_bytes_lu = sample_size;
 
         printf("Envoi de la musique... !\n");
+        
+        if(strcmp(filtre, "turn_up_volume") == 0){
+            rlen = recvfrom(socket_descriptor, msg_received, sizeof(msg_received), 0, 
+                    (struct sockaddr*) &from, &flen);
+            int factor = (int) msg_received;
+        }
 
             while(nbr_bytes_lu == sample_size) {
                 // Lecture des octets dans le fichier.wav
                 nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
+                if(strcmp(filtre, "turn_up_volume") == 0){
+                    turn_up_volume(factor, sample_size, bytes_lus);
+                }
                 // On envoie les bytes lu au client
                 err_send = sendto(socket_descriptor, bytes_lus, strlen(bytes_lus) + 1,
                             0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));

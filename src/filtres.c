@@ -22,17 +22,15 @@ int modify_song_speed(int factor, int sample_rate){
     return sample_rate*factor;
 }
 
-int stereo_to_mono(int play, int channels, unsigned short *bytes_lus, int file_descriptor, int sample_size){
+int stereo_to_mono(int play, int channels, unsigned short *bytes_lus, int sample_size){
     int must_be_played = play;
-    if (channels != 1)
-        channels = 1;
 
     if (must_be_played > 1 || must_be_played < 0)
         return -1;
 
     // Si l'extrait ne doit pas être joue, on lit le suivant et on passe must_be_played à 1
     if (must_be_played == 0){
-        read(file_descriptor, bytes_lus , sample_size);
+        bzero(bytes_lus, sample_size);
         return 1;
     }
 

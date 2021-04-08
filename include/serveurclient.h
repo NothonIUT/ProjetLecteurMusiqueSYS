@@ -8,7 +8,7 @@
  * @param socket_descriptor descripteur de la socket
  * @param from              structure où l'on retrouvera l'adresse source du datagramme
 */
-int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from);
+int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from, int factor);
 
 /** Fonction servant à réceptionner les informations sur la musique du serveur.
  * La fonction renvoie 0 si toutes les informations ont été correctement réceptionnées

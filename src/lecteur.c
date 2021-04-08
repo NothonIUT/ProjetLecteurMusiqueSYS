@@ -5,7 +5,7 @@
 #include <string.h>
 #include "../include/audio.h"
 
-#define DEFAULT_PATH "/private/student/e/ne/gcalonne/Bureau/TP_SYS/ProjetLecteurMusiqueSYS-master/data/" // A changer selon l'emplacement du projet sur votre machine
+#define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/" // A changer selon l'emplacement du projet sur votre machine
 #define MAX_FILENAME_LENGTH 512 // Longueur maximale du chemin jusqu'au fichier
 
 int main() {

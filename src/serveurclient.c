@@ -12,14 +12,14 @@
 #include "../include/serveurclient.h"
 
 
-int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from) {
+int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from, int factor) {
     // Lecture des caractéristiques du fichier et récupération du descripteur du fichier
     int file_descriptor = aud_readinit(filename, &sample_rate, &sample_size, &channels);
     puts("balise1"); // Celle-ci passe
     char msg_send[64];
     // Envoie de sample_rate
         bzero(msg_send, 64);
-        strcpy(msg_send, sample_rate);
+        strcpy(msg_send, sample_rate * factor);
         int err_send = sendto(socket_descriptor, msg_send, strlen(msg_send) + 1,
                             0, (struct sockaddr*) &from, sizeof(struct sockaddr_in *));
         if(err_send < 0){

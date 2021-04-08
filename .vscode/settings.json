@@ -2,6 +2,7 @@
     "files.associations": {
         "audio.h": "c",
         "limits": "c",
-        "soundcard.h": "c"
+        "soundcard.h": "c",
+        "string.h": "c"
     }
 }

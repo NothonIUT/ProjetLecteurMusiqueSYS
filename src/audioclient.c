@@ -11,10 +11,11 @@
 #include <arpa/inet.h>
 #include "../include/audio.h"
 #include "../include/serveurclient.h"
+#include "../include/filtres.h"
 
 
 int main(int argc, char** args) {
-
+	// args[1] = nom du fichier, args[2] = ip du serveur, args[3] = nom du filtre
 	printf("Création du socket...\n");
 	struct sockaddr_in addr;
 	int client_socket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -31,7 +32,7 @@ int main(int argc, char** args) {
 	/*if(bind(client_socket, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0) {
 		printf("Erreur lors de l'assignation du port !\n");
 		return -1;
-	}*/  /* d'après le cour, il n'y en aurait pas besoin ici. */ 
+	}*/  /* d'après le cours, il n'y en aurait pas besoin ici. */ 
 
 	printf("Envoi du datagramme...\n");
 
@@ -40,6 +41,18 @@ int main(int argc, char** args) {
 		return -1;
 	}
 
+	// Seul le filtre stereo_to_mono est appliqué côté client, c'est donc le seul nom de filtre à ne pas avoir besoin d'être envoyé
+	char nomFiltre[32] = args[3];
+	char arguments[32] = args[1];
+	if (strcmp(nomFiltre, "stereo_to_mono") == 1){
+		strcat(args[1], "|");
+		strcat(arguments, nomFiltre);
+	}
+
+	if(sendto(client_socket, arguments, strlen(arguments) + 1, 0, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0) {
+		printf("Erreur lors de l'envoi du datagramme !\n");
+		return -1;
+	}
 	////////// Réception des paquets du serveur //////////
 	int sample_rate, sample_size, channels = 0;
 	struct sockaddr_in from;
@@ -52,6 +65,9 @@ int main(int argc, char** args) {
 	}
 
 	printf("Réglage du lecteur...\n");
+	if(strcmp(nomFiltre, "stereo_to_mono")){
+		channels = 1;
+	}
 
 	int audio_descriptor = aud_writeinit(sample_rate, sample_size, channels);
 	if (audio_descriptor < 0) {
@@ -64,14 +80,14 @@ int main(int argc, char** args) {
 	ssize_t nbr_bytes_lu = sample_size, nbr_bytes_ecrits = sample_size; // Variables contenant le nombre de bytes écrits/lus
 
 	printf("Lecture de la musique...\n");
-
+	int play = 1;
 	do {
 		len = recvfrom(client_socket, bytes_lus, sizeof(bytes_lus), 0, (struct sockaddr *) &from, &flen);
 		if(len < 0) {
 			printf("Erreur lors de la réception d'une partie de la musique !\n");
 			return -1;
 		}
-
+		play = stereo_to_mono(play, channels, bytes_lus, sample_size);
 		nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
 			// Nettoyage du tableau bytes_lus
 			bzero(bytes_lus, sample_size);
