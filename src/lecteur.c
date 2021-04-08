@@ -1,20 +1,14 @@
-/* To make audio playback work on modern Linux systems:
-   - Start your audio client with "padsp audioclient" instead of just "audioclient"
-   - Or set $LD_PRELOAD to libpulsedsp.so
-*/
-
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/soundcard.h>
 #include <unistd.h>
 #include <string.h>
 #include "../include/audio.h"
 
-#define DEFAULT_PATH "/home/nathan/Documents/SYS/Projet/data/" // A changer selon l'emplacement du projet sur votre machine
+#define DEFAULT_PATH "/private/student/e/ne/gcalonne/Bureau/TP_SYS/ProjetLecteurMusiqueSYS-master/data/" // A changer selon l'emplacement du projet sur votre machine
 #define MAX_FILENAME_LENGTH 512 // Longueur maximale du chemin jusqu'au fichier
 
-int main(){
+int main() {
     
     /* On demande le nom du fichier à l'utilisateur. Pour plus de simplicité, on impose le dossier 
     * dans lequel la musique doit se trouver pour la lecture de fichiers locaux
@@ -35,7 +29,7 @@ int main(){
     // Lecture des caractéristiques du fichier et récupération du descripteur du fichier
     int file_descriptor = aud_readinit(filename, &sample_rate, &sample_size, &channels);
 
-    if (file_descriptor == -1){
+    if (file_descriptor == -1) {
        printf("Erreur du file_descriptor\n");
        return -1;
     }
@@ -43,13 +37,12 @@ int main(){
     // Initialisation du descripteur du lecteur audio
     int audio_descriptor = aud_writeinit(sample_rate, sample_size, channels);
     
-    if (audio_descriptor == -1){
+    if (audio_descriptor == -1) {
        printf("Erreur du audio_descriptor\n");
        return -1;
     }
-
-    int convert = 1;
-    unsigned short bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
+    
+    char bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
     ssize_t nbr_bytes_lu = sample_size, nbr_bytes_ecrits=sample_size; // Variables contenant le nombre de bytes écrits/lus
 
     /* Pour lire la musique, il faut d'abord lire les octets dans le fichier .wav
@@ -58,18 +51,14 @@ int main(){
     *  Lorsque le fichier arrive à son terme, le nombre de bytes lus ne correspondra plus 
     *  à la taille des échantillons et on sort de la boucle
     */
-    while(nbr_bytes_lu == sample_size && nbr_bytes_ecrits == sample_size){
+    while(nbr_bytes_lu == sample_size && nbr_bytes_ecrits == sample_size) {
         // Lecture des octets dans le fichier.wav
         nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
-        
         // Ecriture de ces octets dans le lecteur audio
-        convert = stereo_to_mono(convert, channels, bytes_lus, file_descriptor, sample_size);
         nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
-
         // Nettoyage du tableau bytes_lus
         bzero(bytes_lus, sample_size);
     }
 
     printf("Lecture terminée");
 }
-

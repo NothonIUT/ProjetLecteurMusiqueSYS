@@ -7,14 +7,15 @@
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <netinet/in.h>
-#include <audio.h>
 #include <netdb.h>
+#include "../include/audio.h"
+#include "../include/serveurclient.h"
 
 
-int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from){
+int envoi_infos_musique(int sample_rate, int sample_size, int channels, char* filename, int socket_descriptor, struct sockaddr_in from) {
     // Lecture des caractéristiques du fichier et récupération du descripteur du fichier
     int file_descriptor = aud_readinit(filename, &sample_rate, &sample_size, &channels);
-
+    puts("balise1"); // Celle-ci passe
     char msg_send[64];
     // Envoie de sample_rate
         bzero(msg_send, 64);
