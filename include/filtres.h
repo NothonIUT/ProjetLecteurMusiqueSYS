@@ -9,10 +9,10 @@
 */
 int modify_song_speed(int factor, int sample_rate);
 
-int stereo_to_mono(int play, int channels, unsigned short *bytes_lus, int sample_size);
+int stereo_to_mono(int play, unsigned short *bytes_lus, int sample_size);
 
 int mono_to_stereo(int channels, unsigned short *bytes_lus, int file_descriptor, int sample_size);
 
 int add_echo(char* bytes_lus, int audio_descriptor, int sample_rate, int sample_size, int channels);
 
-int turn_up_volume(float factor, int sample_size, unsigned short *bytes_lu);
+int turn_up_volume(float factor, unsigned short *bytes_lu);
