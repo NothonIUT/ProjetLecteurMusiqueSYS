@@ -42,8 +42,10 @@ int main(int argc, char** args) {
 	}
 
 	// Seul le filtre stereo_to_mono est appliqué côté client, c'est donc le seul nom de filtre à ne pas avoir besoin d'être envoyé
-	char nomFiltre[32] = args[3];
-	char arguments[32] = args[1];
+	char nomFiltre[32];
+	strcpy(nomFiltre, args[3]);
+	char arguments[64];
+	strcpy(nomFiltre, args[1]);
 	if (strcmp(nomFiltre, "stereo_to_mono") == 1){
 		strcat(args[1], "|");
 		strcat(arguments, nomFiltre);
@@ -76,8 +78,7 @@ int main(int argc, char** args) {
 		}
 
 	socklen_t len, flen;
-	char bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
-	ssize_t nbr_bytes_lu = sample_size, nbr_bytes_ecrits = sample_size; // Variables contenant le nombre de bytes écrits/lus
+	unsigned short bytes_lus[sample_size]; // Tableau dans lequel les octets lus seront stockés pour être écrits dans le lecteur
 
 	printf("Lecture de la musique...\n");
 	int play = 1;
@@ -87,11 +88,11 @@ int main(int argc, char** args) {
 			printf("Erreur lors de la réception d'une partie de la musique !\n");
 			return -1;
 		}
-		play = stereo_to_mono(play, channels, bytes_lus, sample_size);
-		nbr_bytes_ecrits = write(audio_descriptor, bytes_lus, sample_size);
+		play = stereo_to_mono(play, bytes_lus, sample_size);
+		write(audio_descriptor, bytes_lus, sample_size);
 			// Nettoyage du tableau bytes_lus
 			bzero(bytes_lus, sample_size);
-	} while(bytes_lus != "fin");
+	} while(strcmp((char*) bytes_lus, "fin") == 1);
 
 	printf("Lecture terminée !\n");
 	close(client_socket);

@@ -91,7 +91,7 @@ int main() {
                 // Lecture des octets dans le fichier.wav
                 nbr_bytes_lu = read(file_descriptor, bytes_lus , sample_size); 
                 if(strcmp(filtre, "turn_up_volume") == 0){
-                    turn_up_volume(factor, sample_size, bytes_lus);
+                    turn_up_volume(factor, bytes_lus);
                 }
                 // On envoie les bytes lu au client
                 err_send = sendto(socket_descriptor, bytes_lus, strlen(bytes_lus) + 1,
