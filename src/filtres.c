@@ -22,7 +22,7 @@ int modify_song_speed(int factor, int sample_rate){
     return sample_rate*factor;
 }
 
-int stereo_to_mono(int play, int channels, unsigned short *bytes_lus, int sample_size){
+int stereo_to_mono(int play, unsigned short *bytes_lus, int sample_size){
     int must_be_played = play;
 
     if (must_be_played > 1 || must_be_played < 0)
@@ -50,7 +50,7 @@ int add_echo(char* bytes_lus, int audio_descriptor, int sample_rate, int sample_
     // TODO
 }
 
-int turn_up_volume(float factor, int sample_size, unsigned short *bytes_lu){
+int turn_up_volume(float factor, unsigned short *bytes_lu){
     float sample_float = (float) *bytes_lu;
     sample_float *= factor;
     *bytes_lu = (unsigned short) sample_float;
